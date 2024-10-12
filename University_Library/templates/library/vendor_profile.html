@@ -1,0 +1,110 @@
+{% extends 'library/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Vendor Profile</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.username }}</h5>
+                    <p class="card-text">Email: {{ user.email }}</p>
+                    <a href="{% url 'create' %}" class="btn btn-primary">Add New Book</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="books-tab" data-bs-toggle="tab" data-bs-target="#books" type="button" role="tab" aria-controls="books" aria-selected="true">My Books</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="loaned-tab" data-bs-toggle="tab" data-bs-target="#loaned" type="button" role="tab" aria-controls="loaned" aria-selected="false">Loaned Books</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="books" role="tabpanel" aria-labelledby="books-tab">
+                    <h3 class="mt-3">My Books</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for book in user.books.all %}
+                            <tr>
+                                <td>{{ book.title }}</td>
+                                <td>{{ book.author }}</td>
+                                <td>{% if book.is_borrowed %}Borrowed{% else %}Available{% endif %}</td>
+                                <td>
+                                    <a href="{% url 'details' book.pk %}" class="btn btn-sm btn-info">View</a>
+                                    <a href="{% url 'edit' book.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="{% url 'delete' book.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4">You haven't added any books yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="loaned" role="tabpanel" aria-labelledby="loaned-tab">
+                    <h3 class="mt-3">Loaned Books</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Borrower</th>
+                                <th>Borrow Date</th>
+                                <th>Return Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for borrowed in loaned_books %}
+                            <tr>
+                                <td>{{ borrowed.book.title }}</td>
+                                <td>{{ borrowed.student.username }}</td>
+                                <td>{{ borrowed.borrow_date }}</td>
+                                <td>{{ borrowed.return_date }}</td>
+                                <td>
+                                    {% if borrowed.is_overdue %}
+                                        <span class="text-danger">Overdue</span>
+                                    {% else %}
+                                        <span class="text-success">On time</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">None of your books are currently loaned.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    var triggerTabList = [].slice.call(document.querySelectorAll('#myTab button'))
+    triggerTabList.forEach(function (triggerEl) {
+        var tabTrigger = new bootstrap.Tab(triggerEl)
+        triggerEl.addEventListener('click', function (event) {
+            event.preventDefault()
+            tabTrigger.show()
+        })
+    })
+</script>
+{% endblock %}

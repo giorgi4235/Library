@@ -1,0 +1,22 @@
+{% extends 'library/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row mt-4">
+        {% for book in books %}
+        <div class="col-lg-4 mb-4">
+            <img class="thumbnail" src="{{ book.image_url }}" alt="{{ book.title }}">
+            <div class="box-element product">
+                <h5><strong>{{ book.title }}</strong></h5>
+                <p>Author: {{ book.author }}</p>
+                <hr>
+                {% if not book.is_borrowed and user.is_authenticated and user.profile.is_student %}
+                    <a href="{% url 'borrow_book' book.pk %}" class="btn btn-primary">Borrow</a>
+                {% endif %}
+                <a href="{% url 'details' book.pk%}" class="btn btn-outline-success">View</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

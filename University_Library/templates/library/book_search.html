@@ -1,0 +1,30 @@
+{% extends 'library/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Search Results</h1>
+    <div class="row">
+        {% if books %}
+            {% for book in books %}
+            <div class="col-lg-4 mb-4">
+                <img class="thumbnail" src="{{ book.image_url }}" alt="{{ book.title }}">
+                <div class="box-element product">
+                    <h5><strong>{{ book.title }}</strong></h5>
+                    <p>Author: {{ book.author }}</p>
+                    <p>Status: {% if book.is_borrowed %} Borrowed {% else %} Available {% endif %}</p>
+                    <hr>
+                    {% if not book.is_borrowed %}
+                        <a href="#" class="btn btn-outline-secondary">Borrow</a>
+                    {% endif %}
+                    <a href="{% url 'details' book.pk %}" class="btn btn-outline-success">View</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <p>No books found.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

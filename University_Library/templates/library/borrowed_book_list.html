@@ -1,0 +1,31 @@
+{% extends 'library/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row mt-4">
+        {% for book in books %}
+        <div class="col-lg-4 mb-4">
+            <img class="thumbnail" src="{{ book.image_url }}" alt="{{ book.title }}">
+            <div class="box-element product">
+                <h5><strong>{{ book.title }}</strong></h5>
+                <p>Author: {{ book.author }}</p>
+                {% with borrowed=book.borrowedbook_set.first %}
+                    {% if borrowed %}
+                        <p><strong>Borrowed By:</strong> {{ borrowed.student.username }}</p>
+                        <p><strong>Borrow Date:</strong> {{ borrowed.borrow_date }}</p>
+                        <p><strong>Return Date:</strong> {{ borrowed.return_date }}</p>
+                    {% else %}
+                        <p>No borrower information available.</p>
+                    {% endif %}
+                {% endwith %}
+                <hr>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>No books are currently borrowed.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

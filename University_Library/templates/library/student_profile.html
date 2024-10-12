@@ -1,0 +1,27 @@
+{% extends 'library/base.html' %}
+{% block content %}
+<div class="container">
+    <h2 class="my-4">My Borrowed Books</h2>
+    <div class="row">
+        {% for borrowed_book in borrowed_books %}
+        <div class="col-lg-4 mb-4">
+            <div class="box-element product">
+                <h5><strong>{{ borrowed_book.book.title }}</strong></h5>
+                <p>Author: {{ borrowed_book.book.author }}</p>
+                <p>Borrowed on: {{ borrowed_book.borrow_date }}</p>
+                <p>Return by: {{ borrowed_book.return_date }}</p>
+                {% if borrowed_book.is_overdue %}
+                <p style="color: red;">(Overdue)</p>
+                {% endif %}
+
+                <a href="{% url 'return_book' borrowed_book.book.pk %}" class="btn btn-danger">Return</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>You haven't borrowed any books yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

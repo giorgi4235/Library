@@ -1,0 +1,31 @@
+{% extends 'library/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="image-container">
+                <img src="{{ book.image_url }}" alt="{{ book.title }}" class="img-fluid">
+            </div>
+        </div>
+        <div class="col-md-8 d-flex flex-column justify-content-between">
+            <div>
+                <h1>{{ book.title }}</h1>
+                <p><strong>Author:</strong> {{ book.author }}</p>
+                <p><strong>Status:</strong> {% if book.is_borrowed %}Borrowed{% else %}Available{% endif %}</p>
+                <p><strong>Description:</strong> {{ book.description }}</p>
+            </div>
+            <div class="button-container">
+                <a href="{{ referrer }}" class="btn btn-secondary">Go Back</a>
+                {% if user.is_authenticated and user.profile.is_vendor and book.vendor == user %}
+                    <a href="{% url 'edit' book.pk %}" class="btn btn-warning">Edit book</a>
+                    <a href="{% url 'delete' book.pk %}" class="btn btn-danger">Delete</a>
+                {% endif %}
+                {% if not book.is_borrowed and user.is_authenticated and user.profile.is_student %}
+                    <a href="{% url 'borrow_book' book.pk %}" class="btn btn-primary">Borrow</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
